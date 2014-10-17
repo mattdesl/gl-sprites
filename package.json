@@ -1,0 +1,61 @@
+{
+  "name": "baktch",
+  "version": "1.0.0",
+  "description": "sprite batching for webgl",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Matt DesLauriers",
+    "email": "dave.des@gmail.com",
+    "url": "https://github.com/mattdesl"
+  },
+  "dependencies": {
+    "as-number": "^1.0.0",
+    "canvas-testbed": "^1.0.2",
+    "color-string": "^0.2.1",
+    "gl-basic-shader": "^1.2.2",
+    "gl-mat4": "^1.0.0",
+    "gl-sprite-batch": "^1.0.3",
+    "gl-white-texture": "^1.0.0",
+    "mixes": "^1.0.3",
+    "vectors": "^0.1.0"
+  },
+  "devDependencies": {
+    "baboon-image": "^1.0.0",
+    "canvas-testbed": "^1.0.2",
+    "color-string": "^0.2.1",
+    "gl-texture2d": "^2.0.7",
+    "img": "0.0.1",
+    "tape": "^3.0.1"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "sprites",
+    "gl",
+    "stackgl",
+    "glsl",
+    "shader",
+    "webgl",
+    "batch",
+    "sprite",
+    "image",
+    "img",
+    "sprites",
+    "icons",
+    "fonts",
+    "text",
+    "lines",
+    "rectangles",
+    "circles"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mattdesl/baktch.git"
+  },
+  "homepage": "https://github.com/mattdesl/baktch",
+  "bugs": {
+    "url": "https://github.com/mattdesl/baktch/issues"
+  }
+}
