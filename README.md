@@ -4,12 +4,15 @@
 
 High level sprite batching framework for WebGL scenes. 
 
-- axis-aligned lines and filled rectangles
-- anti-aliased circles (using a shader)
+- hard-edge line segments
+- filled and stroked rectangles
+- anti-aliased circles (using a shader for masking)
 - images, sprite sheets supported
 - bitmap fonts (with word wrapping)
 
-Attempts to batch quads together where possible, to minimize draw calls and improve performance.
+Successive quads using the same texture will end up in the same draw call, ideal for particle systems, chunks of text, etc. If you are constantly drawing different types (i.e. circle, then rect, then circle) you may get a performance hit due to shader switching and excessive draw calls. 
+
+This assumes that transparency and render order is crucial and so it doesn't try to apply any sorting or Z-buffering techniques.
 
 ## Usage
 

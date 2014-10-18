@@ -18,7 +18,7 @@ module.exports = function(gl, opt, cb) {
         if (err)
             return cb(err)
                 
-        var t = Texture(gl, img)
+        var t = createTex(gl, img)
         if (opt.wrap)
             t.wrap = opt.wrap
         if (opt.minFilter)
