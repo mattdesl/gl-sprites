@@ -2,13 +2,12 @@
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
-High level sprite batching framework for WebGL scenes. 
+High level canvas-like interface for rapid prototyping in WebGL.
 
 - hard-edge line segments
 - filled and stroked rectangles
-- anti-aliased circles (using a shader for masking)
 - images, sprite sheets supported
-- bitmap fonts (with word wrapping)
+- bitmap fonts with gl-sprite-text
 
 Successive quads using the same texture will end up in the same draw call, ideal for particle systems, chunks of text, etc. If you are constantly drawing different types (i.e. circle, then rect, then circle) you may get a performance hit due to shader switching and excessive draw calls. 
 

@@ -19,13 +19,21 @@ function SpriteRenderer(gl, opt) {
         return new SpriteRenderer(gl, opt)
     opt = opt||{}
 
+    this._blendSrc = number(opt.blendSrc, gl.SRC_ALPHA)
+    this._blendDst = number(opt.blendDst, gl.ONE_MINUS_SRC_ALPHA)
+    this._blendEnabled = opt.blend !== false
+
     this.gl = gl
-    this.defaultShader = opt.defaultShader || createShader(gl, {
+    this.shader = opt.shader || createShader(gl, {
         color: true,
         texcoord: true
     })
-    this.batch = opt.batch || createBatch(gl, xtend(opt, { premultiplied: true }))
+    this.batch = opt.batch || createBatch(gl, xtend({ 
+        dynamic: true,
+        premultiplied: true 
+    }, opt))
 
+    this._bound = false
     this.projection = mat4.create()
     this.view = mat4.create()
     this.transform = mat4.create()
@@ -46,6 +54,11 @@ mixes(SpriteRenderer, {
         }
     },
 
+    clear: function() {
+        this.batch.clear()
+        return this
+    },
+
     ortho: function(width, height) {
         mat4.ortho(this.projection, 0, width, height, 0, 0, 1)
         this.updateUniforms()
@@ -63,8 +76,8 @@ mixes(SpriteRenderer, {
         return this
     },
 
-    reset: function() {
-        this.batch.reset()
+    defaults: function() {
+        this.batch.defaults()
         this.batch.color = this.color
         return this
     },
@@ -75,7 +88,7 @@ mixes(SpriteRenderer, {
     },
 
     fillRect: function(x, y, width, height) {
-        this.solid().reset()
+        this.solid().defaults()
         this.rect(x, y, width, height)
         return this
     },  
@@ -100,9 +113,23 @@ mixes(SpriteRenderer, {
     },
 
     strokeRect: function(x, y, width, height, thickness) {
-        this.solid().reset()
+        this.solid().defaults()
         this.stroke(x, y, width, height, thickness)
         return this
+    },
+
+    drawText: function(text, x, y, start, end) {
+        var oldTransform = text.batch.transform,
+            oldColor = text.batch.color,
+            wasBound = this._bound
+
+        if (wasBound) this.unbind()
+        text.batch.color = this.color
+        text.batch.transform = this.transform
+        text.draw(this.shader, x, y, start, end)
+        text.batch.color = oldColor
+        text.batch.transform = oldTransform
+        if (wasBound) this.bind()
     },
 
     drawImage: function(image, x, y, width, height) {
@@ -127,7 +154,7 @@ mixes(SpriteRenderer, {
             height = arguments[8]
         }
 
-        this.reset()
+        this.defaults()
         // this.batch.rotation = rotation||0
         // if (rotationOrigin)
         //     this.batch.rotationOrigin = rotationOrigin
@@ -137,29 +164,39 @@ mixes(SpriteRenderer, {
     },
 
     sprite: function(sprite) {
-        this.reset()
+        this.defaults()
         this.batch.push(sprite)
         return this
     },
 
     updateUniforms: function() {
-        this.defaultShader.bind()
-        this.defaultShader.uniforms.projection = this.projection
-        this.defaultShader.uniforms.view = this.view
-        // this.defaultShader.uniforms.model = this.transform
+        this.shader.bind()
+        this.shader.uniforms.projection = this.projection
+        this.shader.uniforms.view = this.view
     },
 
     bind: function() {
         var gl = this.gl
-        gl.enable(gl.BLEND)
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-        
-        this.batch.bind(this.defaultShader)
+        if (this._blendEnabled) {
+            gl.enable(gl.BLEND)
+            gl.blendFunc(this._blendSrc, this._blendDst)
+        }
+
+        this._bound = true
+        this.batch.bind(this.shader)
         this.solid()
+        return this
+    },
+
+    draw: function() {
+        this.batch.draw()
+        return this
     },
 
     unbind: function() {
         this.batch.unbind()
+        this._bound = false
+        return this
     }
 })
 

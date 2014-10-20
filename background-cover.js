@@ -1,3 +1,4 @@
+//NOT USED... gotta get rid of this
 var copy2 = require('./copy').vec2
 
 var pos = [0, 0],

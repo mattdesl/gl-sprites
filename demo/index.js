@@ -1,114 +1,85 @@
-var lena = require('lena')
+var clear = require('gl-clear')()
+require('canvas-testbed')(render, start, { context: 'webgl' })
+
 var baboon = require('baboon-image')
+var Texture = require('gl-texture2d')
+var CheckerTex = require('gl-checker-texture')
+var Background = require('gl-checker-background')
 var Baktch = require('../')
-var Tex = require('gl-texture2d')
-var rgba = require('./rgba')
-var texcoord = require('texcoord')
-var CheckerTex = require('./checker')
 
-var Lato = require('bmfont-lato/32')
-var createText = require('gl-sprite-text')
-
-require('canvas-testbed')(render, start, { 
-    context: 'webgl',
-    width: 400,
-    height: 400
-})
-
-var renderer, tex, tex2, checker, textRenderer
-var t = 0
+var renderer, 
+    bg, 
+    tex,
+    check,
+    time = 0
 
 function render(gl, width, height, dt) {
-    t += dt / 1000
-    gl.clearColor(0.2,0.2,0.2,1.0)
-    gl.clear(gl.COLOR_BUFFER_BIT)
+    time += dt/1000
+    clear(gl)   
 
-
-    renderer.bind()
+    //draw some checker background tastiness 
+    bg.draw()
+    
+    //setup renderer with 2D top-left coords
     renderer.ortho(width, height)
+    renderer.bind()
+    renderer.clear()
 
+    var x = 120,
+        y = 100,
+        w = 100,
+        h = 50,
+        anim = Math.sin(time)/2+0.5
 
+    //draw an image
     renderer.color = [1, 1, 1, 1]
-    var size = 128,
-        off = 50
-    renderer.drawImage(tex2, off, off, size, size)
-
-    //some custom shape drawing..
-    border(renderer, off, off, size, size)
-
-    renderer.color = [1, 1, 1, 0.85]
-    var x = 170, y = 100
-    size = 64
+    renderer.drawImage(tex, 20 + anim*20, 20, anim*tex.shape[0]/2, tex.shape[1]/2)
+    
+    //draw some rotatin' rects
     renderer.save()
     renderer.translate(x, y)
-    renderer.rotateY(t)
-    renderer.translate(-size/2, -size/2)
+    renderer.rotate(time)
+    renderer.rotateX(time*0.8)
+    renderer.translate(-w/2, -h/2)
 
-    renderer.drawImage(tex, 0, 0, 256, 256, 0, 0, size, size)
+    renderer.color = [1, anim, 0.25, 1.0]
+    renderer.fillRect(0, 0, w, h)
+    
+    renderer.color = [0.5, 0.5, 0.5, 1.0]
+    renderer.strokeRect(0, 0, w, h, anim*4)
     renderer.restore()
 
-    renderer.save()
-    renderer.translate(width/2, height/2)
-    renderer.scale(0.5, 0.5)
-    renderer.rotateZ(Math.sin(t/4)*Math.PI)
+    dottedBorder()
 
-    renderer.color = [1, 1, 1, 1]
-    renderer.fillRect(-50*Math.sin(t), 20, 100*Math.sin(t), 5)
-    renderer.color = [1, 0.4, 0.5, 1.0]
-    renderer.strokeRect(100, 10, 80, 50*Math.sin(t), 2)
-
-
-    renderer.restore()
-
-    drawText()
-
+    //bind renderer
+    renderer.draw()
     renderer.unbind()
 }
 
-function drawText() {
-    renderer.identity()
-    renderer.color = [1,1,1,1]
-    renderer.reset()
-    renderer.save()
+function dottedBorder() {
+    var r = 8,  
+        x = 220, 
+        y = 20,
+        width = 100,
+        height = 100
 
-    //this is a bit low-level
-    //something better may be exposed at some point.. 
-    var dpr = 1/(window.devicePixelRatio||1)
-    var bounds = textRenderer.getBounds()
+    //set default attributes
+    renderer.defaults() 
 
-    renderer.translate(10, 10)
-    renderer.scale(dpr, dpr)
-    renderer.translate(0, bounds.height)
-    textRenderer.draw(renderer.batch, 0, 0)
+    //set texture mode to "image" with specific texcoords
+    renderer.image(check, [-r, -r, r, r])
+    renderer.color = [0,0,0,1]
 
-    renderer.restore()
-}
-
-function border(renderer, x, y, width, height) {
-    var r = 8
-    renderer.reset() //reset attributes
-
-    renderer.solid()
-    renderer.color = [1,1,1,0.25]
-    renderer.stroke(x, y, width, height, 4)
-
-    renderer.image(checker, [-r, -r, r, r])
-    renderer.color = [1,1,1,1]
+    //push a raw stroke 
     renderer.stroke(x, y, width, height, 1)
 }
 
 function start(gl, width, height) {
     renderer = Baktch(gl)
-    tex = Tex(gl, baboon)
-    tex2 = Tex(gl, lena)
-    checker = CheckerTex(gl)
-    checker.wrap = gl.REPEAT
+    bg = Background(gl)
+    tex = Texture(gl, baboon.transpose(1, 0, 2))
 
-    textRenderer = createText(gl, {
-        font: Lato,
-        textures: Lato.images.map(function(img) {
-            return Tex(gl, img)
-        }),
-        text: "this is some text with Lato @ 32px!"
+    check = CheckerTex(gl, {
+        colors: [ [0xff,0xff,0xff,0xff], [0x00,0x00,0x00,0x00] ]
     })
 }
