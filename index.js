@@ -123,14 +123,21 @@ mixes(SpriteRenderer, {
             oldColor = text.batch.color,
             wasBound = this._bound
 
-        if (wasBound) this.unbind()
+        if (wasBound) { 
+        //TODO: we could always assume dynamic and remove this condition
+            this.draw()
+            this.unbind()
+            this.clear()
+        }
         text.batch.color = this.color
         text.batch.transform = this.transform
         text.draw(this.shader, x, y, start, end)
         text.batch.color = oldColor
         text.batch.transform = oldTransform
-        if (wasBound) this.bind()
-    },
+        if (wasBound) {
+            this.bind()
+        }
+    }, 
 
     drawImage: function(image, x, y, width, height) {
         "use strict";
@@ -164,7 +171,6 @@ mixes(SpriteRenderer, {
     },
 
     sprite: function(sprite) {
-        this.defaults()
         this.batch.push(sprite)
         return this
     },
@@ -196,6 +202,18 @@ mixes(SpriteRenderer, {
     unbind: function() {
         this.batch.unbind()
         this._bound = false
+        return this
+    },
+
+    begin: function() {
+        this.bind()
+        this.clear()
+        return this
+    },
+
+    end: function() {
+        this.draw()
+        this.unbind()
         return this
     }
 })
