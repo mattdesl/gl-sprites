@@ -5,7 +5,7 @@ var baboon = require('baboon-image')
 var Texture = require('gl-texture2d')
 var CheckerTex = require('gl-checker-texture')
 var Background = require('gl-checker-background')
-var Baktch = require('../')
+var Renderer = require('../')
 
 var renderer, 
     bg, 
@@ -73,10 +73,10 @@ function dottedBorder() {
 }
 
 function start(gl, width, height) {
-    renderer = Baktch(gl)
+    renderer = Renderer(gl)
     bg = Background(gl)
     tex = Texture(gl, baboon.transpose(1, 0, 2))
-
+    
     check = CheckerTex(gl, {
         colors: [ [0xff,0xff,0xff,0xff], [0x00,0x00,0x00,0x00] ]
     })

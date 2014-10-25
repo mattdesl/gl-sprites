@@ -118,7 +118,7 @@ mixes(SpriteRenderer, {
         return this
     },
 
-    drawText: function(text, x, y, start, end) {
+    fillText: function(text, x, y, start, end) {
         var oldTransform = text.batch.transform,
             oldColor = text.batch.color,
             wasBound = this._bound

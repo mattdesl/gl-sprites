@@ -6,9 +6,8 @@ require('canvas-testbed')(render, start, {
 
 var Lato = require('bmfont-lato/64')
 var Text = require('gl-sprite-text')
-var Texture = require('gl-texture2d')
 var Background = require('gl-checker-background')
-var Baktch = require('../')
+var Renderer = require('../')
 
 var dummy = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a ante laoreet, imperdiet libero eu, egestas ipsum. Ut feugiat, lorem ut efficitur eleifend, lacus metus dignissim diam, eget ultricies felis sem ac orci.'
 
@@ -48,16 +47,12 @@ function render(gl, width, height, dt) {
 }
 
 function start(gl, width, height) {
-    var textures = Lato.images.map(function(img) { 
-        return Texture(gl, img)
-    })
-    renderer = Baktch(gl)
+    renderer = Renderer(gl)
     bg = Background(gl)
 
     text = Text(gl, {
         font: Lato,
-        text: dummy,
-        textures: textures
+        text: dummy
     })
 
     resize(width, height)
