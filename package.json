@@ -65,10 +65,5 @@
   "homepage": "https://github.com/mattdesl/gl-sprites",
   "bugs": {
     "url": "https://github.com/mattdesl/gl-sprites/issues"
-  },
-  "browserify": {
-    "transform": [
-      "glslify"
-    ]
   }
 }
