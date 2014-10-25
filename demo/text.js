@@ -28,8 +28,7 @@ function render(gl, width, height, dt) {
     
     //setup renderer with 2D top-left coords
     renderer.ortho(width, height)
-    renderer.bind()
-    renderer.clear()
+    renderer.begin()
 
     var bounds = text.getBounds()
 
@@ -38,15 +37,14 @@ function render(gl, width, height, dt) {
 
     renderer.scale(1/DPR, 1/DPR)
     renderer.color = [0, 0, 0, 1]
-    renderer.drawText(text, pad, pad+bounds.height)
+    renderer.fillText(text, pad, pad+bounds.height)
 
     renderer.color = [0, 0, 0, 0.5]
     renderer.strokeRect(pad, pad, bounds.width, bounds.height, 4)
     renderer.restore()
     
     //bind renderer
-    renderer.draw()
-    renderer.unbind()
+    renderer.end()
 }
 
 function start(gl, width, height) {

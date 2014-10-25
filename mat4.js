@@ -8,5 +8,6 @@ module.exports = {
     rotateY: require('gl-mat4/rotateY'),
     rotateX: require('gl-mat4/rotateX'),
     translate: require('gl-mat4/translate'),
-    clone: require('gl-mat4/clone')
+    clone: require('gl-mat4/clone'),
+    multiply: require('gl-mat4/multiply')
 }

@@ -51,6 +51,11 @@ module.exports = {
         return this
     },
 
+    transformMat4: function(matrix4x4) {
+        mat4.multiply(this.transform, this.transform, matrix4x4)
+        return this
+    },
+
     rotate: function(rad) {
         this.rotateZ(rad)
         return this

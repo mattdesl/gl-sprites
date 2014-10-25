@@ -1,22 +1,52 @@
-# baktch
+# gl-sprites 
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
-High level canvas-like interface for rapid prototyping in WebGL.
+A high-level 2D WebGL rendering API similar to HTML5 Canvas2D context. This is built on [gl-sprite-batch](https://nodei.co/npm/gl-sprite-batch/), which can be used alongside (or instead of) this for more performance-critical features.
 
-- hard-edge line segments
-- filled and stroked rectangles
-- images, sprite sheets supported
-- bitmap fonts with gl-sprite-text
+It dynamically batches textured quads with a single shader. This makes it ideal for games using sprite sheets, text rendering, particle systems, etc. It uses 'source over' blending by default (`SRC_ALPHA`, `ONE_MINUS_SRC_ALPHA`), and colours are premultiplied by their alpha. It can also draw filled and stroked rectangles and line segments.
 
-Successive quads using the same texture will end up in the same draw call, ideal for particle systems, chunks of text, etc. If you are constantly drawing different types (i.e. circle, then rect, then circle) you may get a performance hit due to shader switching and excessive draw calls. 
+Example:
 
-This assumes that transparency and render order is crucial and so it doesn't try to apply any sorting or Z-buffering techniques.
+```js
+var gl = require('webgl-context')()
+var clear = require('gl-clear')()
+var Sprites = require('gl-sprites')
+
+var renderer = Sprites(gl)
+
+function render(width, height) {
+    clear(gl)
+
+    renderer.ortho(width, height)
+    renderer.begin()
+
+    renderer.color = [1, 0, 0, 1]
+
+    //assumes gl-texture2d 
+    renderer.drawImage(tex, 25, 25)
+
+    //rectangles and lines
+    renderer.save()
+    renderer.translate(25, 25)
+    renderer.drawRect(0, 0, 15, 15)
+    renderer.strokeRect(50, 50, 25, 25)
+    renderer.restore()
+
+    //assumes gl-sprite-text is being passed
+    renderer.drawText(textSprite, 20, 100)
+    
+    renderer.end()
+}
 
 ## Usage
 
-[![NPM](https://nodei.co/npm/baktch.png)](https://nodei.co/npm/baktch/)
+[![NPM](https://nodei.co/npm/gl-sprites.png)](https://nodei.co/npm/gl-sprites/)
+
+#### `sprites = createSprites(gl[, opt])`
+
+
 
 ## License
 
-MIT, see [LICENSE.md](http://github.com/mattdesl/baktch/blob/master/LICENSE.md) for details.
+MIT, see [LICENSE.md](http://github.com/mattdesl/gl-sprites/blob/master/LICENSE.md) for details.

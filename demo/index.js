@@ -22,8 +22,7 @@ function render(gl, width, height, dt) {
     
     //setup renderer with 2D top-left coords
     renderer.ortho(width, height)
-    renderer.bind()
-    renderer.clear()
+    renderer.begin()
 
     var x = 120,
         y = 100,
@@ -52,8 +51,7 @@ function render(gl, width, height, dt) {
     dottedBorder()
 
     //bind renderer
-    renderer.draw()
-    renderer.unbind()
+    renderer.end()
 }
 
 function dottedBorder() {
