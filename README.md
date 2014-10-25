@@ -38,6 +38,7 @@ function render(width, height) {
     
     renderer.end()
 }
+```
 
 ## Usage
 
