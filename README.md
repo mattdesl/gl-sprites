@@ -1,3 +1,7 @@
+## work in progress
+
+This module is just a prototype / experiment. It will most likely change completely. The underlying gl-sprite-batch and gl-sprite-text are more stable. 
+
 # gl-sprites 
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
